@@ -1,0 +1,36 @@
+name: 👻
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ghost Commit
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Actions"
+
+          git checkout --orphan new-main
+          git add -A
+          git commit -m "$(printf '\xE2\x80\x8B')"
+
+          git branch -M main
+          git push -f origin main
+
+      - name: Cleanup Workflow Runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 0
+          keep_minimum_runs: 0
